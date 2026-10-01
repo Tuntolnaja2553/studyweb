@@ -1,0 +1,1649 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyWeb</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6fb;
+            color: #222;
+        }
+
+        header {
+            background: #4f46e5;
+            color: white;
+            padding: 25px;
+        }
+
+        header h1 {
+            font-size: 28px;
+        }
+
+        header p {
+            margin-top: 6px;
+        }
+
+        nav {
+            background: white;
+            padding: 12px;
+            display: flex;
+            gap: 10px;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            overflow-x: auto;
+        }
+
+        nav button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #eee;
+            white-space: nowrap;
+        }
+
+        nav button:hover {
+            background: #ddd;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .card h2 {
+            margin-top: 8px;
+            font-size: 30px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        button.primary {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button.primary:hover {
+            background: #4338ca;
+        }
+
+        button.delete {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button.success {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button.link {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button.test {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #f1f1f1;
+        }
+
+        .done {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .schedule-image {
+            width: 100%;
+            max-height: 700px;
+            object-fit: contain;
+            display: block;
+            margin-top: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .homework-item {
+            background: #f8f9ff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 12px;
+        }
+
+        .homework-item h3 {
+            margin-bottom: 8px;
+        }
+
+        .homework-info {
+            margin: 5px 0;
+        }
+
+        .notification-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: #f3f4f6;
+        }
+
+        @media (max-width: 700px) {
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 13px;
+            }
+
+            th,
+            td {
+                padding: 7px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>📚 StudyWeb</h1>
+    <p>ระบบจัดการการเรียนส่วนตัว</p>
+</header>
+
+<nav>
+    <button onclick="showPage('home')">🏠 หน้าหลัก</button>
+    <button onclick="showPage('homework')">📝 การบ้าน</button>
+    <button onclick="showPage('schedule')">📅 ตารางเรียน</button>
+    <button onclick="showPage('scores')">📊 คะแนน</button>
+</nav>
+
+<div class="container">
+
+    <!-- หน้าหลัก -->
+    <section id="home" class="page active">
+
+        <h2>ภาพรวมการเรียน</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <p>การบ้านทั้งหมด</p>
+                <h2 id="totalHomework">0</h2>
+            </div>
+
+            <div class="card">
+                <p>งานที่เสร็จแล้ว</p>
+                <h2 id="doneHomework">0</h2>
+            </div>
+
+            <div class="card">
+                <p>คะแนนเฉลี่ย</p>
+                <h2 id="averageScore">0%</h2>
+            </div>
+
+        </div>
+
+        <div class="box">
+            <h3>📌 งานที่ยังไม่เสร็จ</h3>
+            <div id="homeTodo"></div>
+        </div>
+
+    </section>
+
+
+    <!-- การบ้าน -->
+    <section id="homework" class="page">
+
+        <h2>📝 การบ้าน</h2>
+
+        <!-- เพิ่มการบ้าน -->
+        <div class="box">
+
+            <h3>➕ เพิ่มการบ้าน</h3>
+
+            <label>วิชา</label>
+            <input id="hwSubject" placeholder="เช่น คณิตศาสตร์">
+
+            <label>ชื่องาน</label>
+            <input id="hwName" placeholder="เช่น แบบฝึกหัดบทที่ 3">
+
+            <label>คะแนนเต็ม</label>
+            <input
+                id="hwPoints"
+                type="number"
+                min="0"
+                placeholder="เช่น 20"
+            >
+
+            <label>วันกำหนดส่ง</label>
+            <input id="hwDate" type="date">
+
+            <label>ลิงก์ Google Classroom</label>
+            <input
+                id="hwLink"
+                type="url"
+                placeholder="https://classroom.google.com/..."
+            >
+
+            <button class="primary" onclick="addHomework()">
+                ➕ เพิ่มการบ้าน
+            </button>
+
+        </div>
+
+
+        <!-- Classroom -->
+        <div class="box">
+
+            <h3>📋 เพิ่มจากข้อมูล Classroom</h3>
+
+            <p style="margin-top:8px; margin-bottom:10px;">
+                วางข้อมูลจาก Classroom แล้วระบบจะพยายามแยกข้อมูลให้อัตโนมัติ
+            </p>
+
+            <textarea
+                id="classroomText"
+                placeholder="ตัวอย่าง:
+
+คณิตศาสตร์
+แบบฝึกหัดเรื่องสมการ
+20 คะแนน
+กำหนดส่ง 5 ตุลาคม 2569
+https://classroom.google.com/..."
+            ></textarea>
+
+            <button class="primary" onclick="addFromClassroom()">
+                ⚡ เพิ่มจากข้อความ
+            </button>
+
+        </div>
+
+
+        <!-- แจ้งเตือน -->
+        <div class="box">
+
+            <h3>🔔 การแจ้งเตือน</h3>
+
+            <p style="margin-top:8px;">
+                ระบบจะแจ้งเตือนเมื่อการบ้านเหลือไม่เกิน 24 ชั่วโมง
+            </p>
+
+            <button
+                class="primary"
+                onclick="requestNotificationPermission()"
+                style="margin-top:10px;"
+            >
+                🔔 เปิดการแจ้งเตือน
+            </button>
+
+            <button
+                class="test"
+                onclick="testNotification()"
+            >
+                🧪 ทดสอบแจ้งเตือน
+            </button>
+
+            <div
+                id="notificationStatus"
+                class="notification-status"
+            >
+                สถานะ: ยังไม่ได้ตรวจสอบ
+            </div>
+
+        </div>
+
+
+        <!-- รายการการบ้าน -->
+        <div class="box">
+
+            <h3>📚 รายการการบ้าน</h3>
+
+            <div id="homeworkList"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ตารางเรียน -->
+    <section id="schedule" class="page">
+
+        <h2>📅 ตารางเรียน</h2>
+
+        <div class="box">
+
+            <h3>ภาคเรียนปัจจุบัน</h3>
+
+            <input
+                type="text"
+                id="semester"
+                placeholder="เช่น ภาคเรียนที่ 1/2569"
+            >
+
+            <input
+                type="file"
+                id="scheduleFile"
+                accept="image/*"
+            >
+
+            <button
+                class="primary"
+                onclick="saveSchedule()"
+            >
+                📷 เพิ่ม / เปลี่ยนตารางเรียน
+            </button>
+
+            <button
+                class="delete"
+                onclick="deleteSchedule()"
+                style="margin-left:8px;"
+            >
+                🗑️ ลบตาราง
+            </button>
+
+            <div id="scheduleDisplay"></div>
+
+        </div>
+
+    </section>
+
+
+    <!-- คะแนน -->
+    <section id="scores" class="page">
+
+        <h2>📊 คะแนน</h2>
+
+        <div class="box">
+
+            <input
+                id="scoreSubject"
+                placeholder="วิชา"
+            >
+
+            <input
+                id="scoreGot"
+                type="number"
+                min="0"
+                placeholder="คะแนนที่ได้"
+            >
+
+            <input
+                id="scoreFull"
+                type="number"
+                min="1"
+                placeholder="คะแนนเต็ม"
+            >
+
+            <button
+                class="primary"
+                onclick="addScore()"
+            >
+                ➕ เพิ่มคะแนน
+            </button>
+
+        </div>
+
+        <div class="box">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>วิชา</th>
+                        <th>คะแนน</th>
+                        <th>เปอร์เซ็นต์</th>
+                        <th>ลบ</th>
+                    </tr>
+                </thead>
+
+                <tbody id="scoreList"></tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<script>
+
+    /* =========================
+       โหลดข้อมูล
+    ========================= */
+
+    let homework =
+        JSON.parse(localStorage.getItem("homework")) || [];
+
+    let scores =
+        JSON.parse(localStorage.getItem("scores")) || [];
+
+    let schedule =
+        JSON.parse(localStorage.getItem("schedule")) || null;
+
+
+    /* =========================
+       บันทึกข้อมูล
+    ========================= */
+
+    function saveData() {
+
+        localStorage.setItem(
+            "homework",
+            JSON.stringify(homework)
+        );
+
+        localStorage.setItem(
+            "scores",
+            JSON.stringify(scores)
+        );
+
+        localStorage.setItem(
+            "schedule",
+            JSON.stringify(schedule)
+        );
+    }
+
+
+    /* =========================
+       เปลี่ยนหน้า
+    ========================= */
+
+    function showPage(page) {
+
+        document
+            .querySelectorAll(".page")
+            .forEach(function (p) {
+                p.classList.remove("active");
+            });
+
+        document
+            .getElementById(page)
+            .classList.add("active");
+
+        updateHome();
+    }
+
+
+    /* =========================
+       เพิ่มการบ้าน
+    ========================= */
+
+    function addHomework() {
+
+        const subject =
+            document.getElementById("hwSubject").value.trim();
+
+        const name =
+            document.getElementById("hwName").value.trim();
+
+        const points =
+            document.getElementById("hwPoints").value;
+
+        const date =
+            document.getElementById("hwDate").value;
+
+        const link =
+            document.getElementById("hwLink").value.trim();
+
+        if (!subject || !name || !date) {
+
+            alert(
+                "กรุณากรอกวิชา ชื่องาน และวันกำหนดส่ง"
+            );
+
+            return;
+        }
+
+        homework.push({
+            subject: subject,
+            name: name,
+            points: points || 0,
+            date: date,
+            link: link,
+            done: false
+        });
+
+        saveData();
+
+        document.getElementById("hwSubject").value = "";
+        document.getElementById("hwName").value = "";
+        document.getElementById("hwPoints").value = "";
+        document.getElementById("hwDate").value = "";
+        document.getElementById("hwLink").value = "";
+
+        renderHomework();
+
+        alert("เพิ่มการบ้านเรียบร้อยแล้ว");
+    }
+
+
+    /* =========================
+       เพิ่มจาก Classroom
+    ========================= */
+
+    function addFromClassroom() {
+
+        const text =
+            document
+                .getElementById("classroomText")
+                .value
+                .trim();
+
+        if (!text) {
+
+            alert(
+                "กรุณาวางข้อมูลจาก Classroom ก่อน"
+            );
+
+            return;
+        }
+
+        const lines =
+            text
+                .split("\n")
+                .map(x => x.trim())
+                .filter(x => x !== "");
+
+        let subject = "";
+        let name = "";
+        let points = 0;
+        let date = "";
+        let link = "";
+
+
+        /* หา URL */
+
+        for (const line of lines) {
+
+            const urlMatch =
+                line.match(
+                    /https?:\/\/\S+/i
+                );
+
+            if (urlMatch) {
+                link = urlMatch[0];
+                break;
+            }
+        }
+
+
+        /* หาคะแนน */
+
+        for (const line of lines) {
+
+            const match =
+                line.match(
+                    /(\d+(?:\.\d+)?)\s*(?:คะแนน|แต้ม)/i
+                );
+
+            if (match) {
+                points = match[1];
+                break;
+            }
+        }
+
+
+        /* หาวันส่ง */
+
+        for (const line of lines) {
+
+            if (
+                line.includes("กำหนดส่ง") ||
+                line.includes("ส่ง")
+            ) {
+
+                date =
+                    line
+                        .replace("กำหนดส่ง", "")
+                        .replace("ส่ง", "")
+                        .trim();
+
+                break;
+            }
+        }
+
+
+        /* หา subject + name */
+
+        const usableLines =
+            lines.filter(function (line) {
+
+                return (
+                    !line.startsWith("http") &&
+                    !line.includes("คะแนน") &&
+                    !line.includes("แต้ม") &&
+                    !line.includes("กำหนดส่ง") &&
+                    !line.includes("ส่ง")
+                );
+
+            });
+
+        if (usableLines.length >= 1) {
+            subject = usableLines[0];
+        }
+
+        if (usableLines.length >= 2) {
+            name = usableLines[1];
+        }
+
+        if (!name) {
+
+            alert(
+                "ไม่สามารถหาในส่วนชื่องานได้"
+            );
+
+            return;
+        }
+
+
+        homework.push({
+
+            subject:
+                subject || "ไม่ระบุวิชา",
+
+            name: name,
+
+            points: points,
+
+            date:
+                date || "ไม่ระบุ",
+
+            link: link,
+
+            done: false
+
+        });
+
+        saveData();
+
+        document
+            .getElementById("classroomText")
+            .value = "";
+
+        renderHomework();
+
+        alert(
+            "เพิ่มงานเรียบร้อยแล้ว"
+        );
+    }
+
+
+    /* =========================
+       แสดงการบ้าน
+    ========================= */
+
+    function renderHomework() {
+
+        const list =
+            document.getElementById("homeworkList");
+
+        list.innerHTML = "";
+
+        if (homework.length === 0) {
+
+            list.innerHTML =
+                "<p style='margin-top:15px;'>ยังไม่มีการบ้าน</p>";
+
+            updateHome();
+
+            return;
+        }
+
+        homework.forEach(function (hw, index) {
+
+            const item =
+                document.createElement("div");
+
+            item.className =
+                "homework-item" +
+                (hw.done ? " done" : "");
+
+
+            const title =
+                document.createElement("h3");
+
+            title.textContent =
+                hw.name;
+
+            item.appendChild(title);
+
+
+            const subject =
+                document.createElement("div");
+
+            subject.className =
+                "homework-info";
+
+            subject.innerHTML =
+                "📚 วิชา: <strong></strong>";
+
+            subject.querySelector("strong").textContent =
+                hw.subject;
+
+            item.appendChild(subject);
+
+
+            const points =
+                document.createElement("div");
+
+            points.className =
+                "homework-info";
+
+            points.innerHTML =
+                "🏆 คะแนนเต็ม: <strong></strong>";
+
+            points.querySelector("strong").textContent =
+                hw.points || "ไม่ระบุ";
+
+            item.appendChild(points);
+
+
+            const date =
+                document.createElement("div");
+
+            date.className =
+                "homework-info";
+
+            date.innerHTML =
+                "📅 กำหนดส่ง: <strong></strong>";
+
+            date.querySelector("strong").textContent =
+                hw.date;
+
+            item.appendChild(date);
+
+
+            const buttons =
+                document.createElement("div");
+
+            buttons.style.marginTop =
+                "12px";
+
+
+            const doneButton =
+                document.createElement("button");
+
+            doneButton.className =
+                "success";
+
+            doneButton.textContent =
+                hw.done
+                    ? "↩️ ทำใหม่"
+                    : "✅ ทำเสร็จแล้ว";
+
+            doneButton.onclick =
+                function () {
+                    toggleHomework(index);
+                };
+
+            buttons.appendChild(doneButton);
+
+
+            if (hw.link) {
+
+                const linkButton =
+                    document.createElement("button");
+
+                linkButton.className =
+                    "link";
+
+                linkButton.textContent =
+                    "🔗 เปิดงาน";
+
+                linkButton.style.marginLeft =
+                    "6px";
+
+                linkButton.onclick =
+                    function () {
+                        openHomeworkLink(index);
+                    };
+
+                buttons.appendChild(linkButton);
+            }
+
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.className =
+                "delete";
+
+            deleteButton.textContent =
+                "🗑️ ลบ";
+
+            deleteButton.style.marginLeft =
+                "6px";
+
+            deleteButton.onclick =
+                function () {
+                    deleteHomework(index);
+                };
+
+            buttons.appendChild(deleteButton);
+
+
+            item.appendChild(buttons);
+
+            list.appendChild(item);
+
+        });
+
+        updateHome();
+    }
+
+
+    /* =========================
+       เปิดลิงก์งาน
+    ========================= */
+
+    function openHomeworkLink(index) {
+
+        const link =
+            homework[index].link;
+
+        if (!link) {
+
+            alert("งานนี้ไม่มีลิงก์");
+
+            return;
+        }
+
+        window.open(
+            link,
+            "_blank"
+        );
+    }
+
+
+    /* =========================
+       เปลี่ยนสถานะงาน
+    ========================= */
+
+    function toggleHomework(index) {
+
+        homework[index].done =
+            !homework[index].done;
+
+        saveData();
+
+        renderHomework();
+
+        checkHomeworkNotification();
+    }
+
+
+    /* =========================
+       ลบการบ้าน
+    ========================= */
+
+    function deleteHomework(index) {
+
+        if (
+            !confirm(
+                "ต้องการลบการบ้านนี้หรือไม่?"
+            )
+        ) {
+            return;
+        }
+
+        homework.splice(index, 1);
+
+        saveData();
+
+        renderHomework();
+
+    }
+
+
+    /* =========================
+       ตารางเรียน
+    ========================= */
+
+    function saveSchedule() {
+
+        const file =
+            document
+                .getElementById("scheduleFile")
+                .files[0];
+
+        const semester =
+            document
+                .getElementById("semester")
+                .value
+                .trim();
+
+        if (!file) {
+
+            alert(
+                "กรุณาเลือกรูปตารางเรียน"
+            );
+
+            return;
+        }
+
+        const reader =
+            new FileReader();
+
+        reader.onload =
+            function (e) {
+
+                schedule = {
+
+                    semester:
+                        semester ||
+                        "ภาคเรียนปัจจุบัน",
+
+                    image:
+                        e.target.result
+                };
+
+                saveData();
+
+                displaySchedule();
+
+                document
+                    .getElementById("scheduleFile")
+                    .value = "";
+
+                alert(
+                    "บันทึกตารางเรียนแล้ว"
+                );
+            };
+
+        reader.readAsDataURL(file);
+    }
+
+
+    /* =========================
+       แสดงตารางเรียน
+    ========================= */
+
+    function displaySchedule() {
+
+        const display =
+            document.getElementById("scheduleDisplay");
+
+        if (!schedule) {
+
+            display.innerHTML =
+                "<p style='margin-top:15px;'>ยังไม่มีตารางเรียน</p>";
+
+            return;
+        }
+
+        document
+            .getElementById("semester")
+            .value =
+            schedule.semester;
+
+        display.innerHTML = "";
+
+        const title =
+            document.createElement("h3");
+
+        title.style.marginTop =
+            "20px";
+
+        title.textContent =
+            schedule.semester;
+
+        display.appendChild(title);
+
+
+        const image =
+            document.createElement("img");
+
+        image.className =
+            "schedule-image";
+
+        image.src =
+            schedule.image;
+
+        image.alt =
+            "ตารางเรียน";
+
+        display.appendChild(image);
+    }
+
+
+    /* =========================
+       ลบตารางเรียน
+    ========================= */
+
+    function deleteSchedule() {
+
+        if (!schedule) {
+
+            alert(
+                "ยังไม่มีตารางเรียน"
+            );
+
+            return;
+        }
+
+        if (
+            !confirm(
+                "ต้องการลบตารางเรียนหรือไม่?"
+            )
+        ) {
+            return;
+        }
+
+        schedule = null;
+
+        saveData();
+
+        displaySchedule();
+
+        document
+            .getElementById("semester")
+            .value = "";
+    }
+
+
+    /* =========================
+       เพิ่มคะแนน
+    ========================= */
+
+    function addScore() {
+
+        const subject =
+            document
+                .getElementById("scoreSubject")
+                .value
+                .trim();
+
+        const got =
+            Number(
+                document
+                    .getElementById("scoreGot")
+                    .value
+            );
+
+        const full =
+            Number(
+                document
+                    .getElementById("scoreFull")
+                    .value
+            );
+
+        if (
+            !subject ||
+            full <= 0 ||
+            got < 0 ||
+            got > full
+        ) {
+
+            alert(
+                "กรุณากรอกข้อมูลคะแนนให้ถูกต้อง"
+            );
+
+            return;
+        }
+
+        scores.push({
+
+            subject:
+                subject,
+
+            got:
+                got,
+
+            full:
+                full
+
+        });
+
+        saveData();
+
+        document
+            .getElementById("scoreSubject")
+            .value = "";
+
+        document
+            .getElementById("scoreGot")
+            .value = "";
+
+        document
+            .getElementById("scoreFull")
+            .value = "";
+
+        renderScores();
+    }
+
+
+    /* =========================
+       แสดงคะแนน
+    ========================= */
+
+    function renderScores() {
+
+        const list =
+            document.getElementById("scoreList");
+
+        list.innerHTML = "";
+
+        scores.forEach(function (score, index) {
+
+            const percent =
+                (
+                    score.got /
+                    score.full *
+                    100
+                ).toFixed(1);
+
+            const row =
+                document.createElement("tr");
+
+            row.innerHTML = `
+                <td></td>
+                <td>${score.got} / ${score.full}</td>
+                <td>${percent}%</td>
+                <td>
+                    <button class="delete">
+                        ลบ
+                    </button>
+                </td>
+            `;
+
+            row.children[0].textContent =
+                score.subject;
+
+            row
+                .querySelector("button")
+                .onclick =
+                function () {
+                    deleteScore(index);
+                };
+
+            list.appendChild(row);
+        });
+
+        updateHome();
+    }
+
+
+    /* =========================
+       ลบคะแนน
+    ========================= */
+
+    function deleteScore(index) {
+
+        scores.splice(index, 1);
+
+        saveData();
+
+        renderScores();
+    }
+
+
+    /* =========================
+       หน้าหลัก
+    ========================= */
+
+    function updateHome() {
+
+        document
+            .getElementById("totalHomework")
+            .textContent =
+            homework.length;
+
+        document
+            .getElementById("doneHomework")
+            .textContent =
+            homework.filter(
+                x => x.done
+            ).length;
+
+
+        let average = 0;
+
+        if (scores.length > 0) {
+
+            let total = 0;
+
+            scores.forEach(
+                function (score) {
+
+                    total +=
+                        score.got /
+                        score.full *
+                        100;
+                }
+            );
+
+            average =
+                (
+                    total /
+                    scores.length
+                ).toFixed(1);
+        }
+
+        document
+            .getElementById("averageScore")
+            .textContent =
+            average + "%";
+
+
+        const todo =
+            document.getElementById("homeTodo");
+
+        const unfinished =
+            homework.filter(
+                x => !x.done
+            );
+
+        if (
+            unfinished.length === 0
+        ) {
+
+            todo.innerHTML =
+                "<p style='margin-top:10px;'>🎉 ไม่มีงานค้าง</p>";
+
+            return;
+        }
+
+
+        todo.innerHTML = "";
+
+        unfinished.forEach(function (x) {
+
+            const p =
+                document.createElement("p");
+
+            p.style.marginTop =
+                "8px";
+
+            p.textContent =
+                "📝 " +
+                x.name +
+                " — " +
+                x.subject +
+                " — ส่ง " +
+                x.date;
+
+            todo.appendChild(p);
+        });
+    }
+
+
+    /* =================================================
+       ระบบแจ้งเตือน
+    ================================================= */
+
+    function updateNotificationStatus() {
+
+        const status =
+            document.getElementById(
+                "notificationStatus"
+            );
+
+        if (!("Notification" in window)) {
+
+            status.textContent =
+                "สถานะ: เบราว์เซอร์ไม่รองรับแจ้งเตือน";
+
+            return;
+        }
+
+
+        if (
+            Notification.permission ===
+            "granted"
+        ) {
+
+            status.textContent =
+                "สถานะ: ✅ เปิดการแจ้งเตือนแล้ว";
+
+        } else if (
+            Notification.permission ===
+            "denied"
+        ) {
+
+            status.textContent =
+                "สถานะ: ❌ ถูกบล็อก กรุณาอนุญาตแจ้งเตือนใน Chrome";
+
+        } else {
+
+            status.textContent =
+                "สถานะ: ⚪ ยังไม่ได้อนุญาต";
+        }
+    }
+
+
+    /* ขอสิทธิ์แจ้งเตือน */
+
+    function requestNotificationPermission() {
+
+        if (!("Notification" in window)) {
+
+            alert(
+                "เบราว์เซอร์นี้ไม่รองรับการแจ้งเตือน"
+            );
+
+            return;
+        }
+
+
+        Notification.requestPermission()
+            .then(function (permission) {
+
+                updateNotificationStatus();
+
+                if (
+                    permission ===
+                    "granted"
+                ) {
+
+                    new Notification(
+                        "📚 StudyWeb",
+                        {
+                            body:
+                                "เปิดการแจ้งเตือนเรียบร้อยแล้ว ✅"
+                        }
+                    );
+
+                    alert(
+                        "เปิดการแจ้งเตือนแล้ว 🔔"
+                    );
+
+                    checkHomeworkNotification();
+
+                } else {
+
+                    alert(
+                        "ยังไม่ได้อนุญาตการแจ้งเตือน"
+                    );
+                }
+            });
+    }
+
+
+    /* ทดสอบแจ้งเตือนทันที */
+
+    function testNotification() {
+
+        if (
+            !("Notification" in window)
+        ) {
+
+            alert(
+                "เบราว์เซอร์ไม่รองรับการแจ้งเตือน"
+            );
+
+            return;
+        }
+
+
+        if (
+            Notification.permission !==
+            "granted"
+        ) {
+
+            alert(
+                "กรุณากด 'เปิดการแจ้งเตือน' ก่อน"
+            );
+
+            return;
+        }
+
+
+        new Notification(
+            "🧪 ทดสอบ StudyWeb",
+            {
+                body:
+                    "ถ้าเห็นข้อความนี้ แปลว่าแจ้งเตือนใช้งานได้แล้ว 🎉"
+            }
+        );
+    }
+
+
+    /* ตรวจการบ้าน */
+
+    function checkHomeworkNotification() {
+
+        if (
+            !("Notification" in window)
+        ) {
+            return;
+        }
+
+        if (
+            Notification.permission !==
+            "granted"
+        ) {
+            return;
+        }
+
+        const now =
+            new Date();
+
+        const oneDay =
+            24 *
+            60 *
+            60 *
+            1000;
+
+
+        homework.forEach(
+            function (hw) {
+
+                if (hw.done) {
+                    return;
+                }
+
+                if (
+                    !hw.date ||
+                    hw.date ===
+                    "ไม่ระบุ"
+                ) {
+                    return;
+                }
+
+
+                let dueDate;
+
+
+                /* วันที่จาก input type="date" */
+
+                if (
+                    /^\d{4}-\d{2}-\d{2}$/.test(
+                        hw.date
+                    )
+                ) {
+
+                    dueDate =
+                        new Date(
+                            hw.date +
+                            "T23:59:00"
+                        );
+
+                } else {
+
+                    /* ถ้าเป็นข้อความจาก Classroom
+                       จะข้ามการแจ้งเตือน
+                       ถ้าไม่ใช่รูปแบบที่ระบบอ่านได้ */
+
+                    return;
+                }
+
+
+                if (
+                    isNaN(
+                        dueDate.getTime()
+                    )
+                ) {
+                    return;
+                }
+
+
+                const difference =
+                    dueDate -
+                    now;
+
+
+                if (
+                    difference > 0 &&
+                    difference <= oneDay
+                ) {
+
+                    const notificationKey =
+                        "notified_" +
+                        hw.name +
+                        "_" +
+                        hw.date;
+
+
+                    if (
+                        localStorage.getItem(
+                            notificationKey
+                        )
+                    ) {
+                        return;
+                    }
+
+
+                    new Notification(
+                        "🔔 การบ้านใกล้ถึงกำหนด",
+                        {
+                            body:
+                                hw.name +
+                                "\nวิชา: " +
+                                hw.subject +
+                                "\nกำหนดส่ง: " +
+                                hw.date
+                        }
+                    );
+
+
+                    localStorage.setItem(
+                        notificationKey,
+                        "true"
+                    );
+                }
+
+            }
+        );
+    }
+
+
+    /* =========================
+       เริ่มระบบ
+    ========================= */
+
+    renderHomework();
+    renderScores();
+    displaySchedule();
+    updateHome();
+    updateNotificationStatus();
+
+    checkHomeworkNotification();
+
+
+    /* ตรวจทุก 1 นาที */
+
+    setInterval(
+        function () {
+            checkHomeworkNotification();
+        },
+        60 * 1000
+    );
+
+</script>
+
+</body>
+</html>
